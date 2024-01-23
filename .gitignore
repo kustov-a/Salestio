@@ -1,0 +1,37 @@
+
+###> symfony/framework-bundle ###
+/vendor/
+/var/
+
+/app/config/parameters.yml
+/app/config/parameters.yml.dist
+
+/app/logs/
+/var/logs/
+
+/var/cache/
+
+/var/sessions/
+
+/app/config/doctrine/
+/bin/doctrine
+
+/app/config/data/
+/bin/console
+
+/.env
+/.env.local
+/.env.local.php
+/.env.*.local
+
+/.idea/
+
+/.symfony/
+
+/.local/
+
+/config/secrets/prod/prod.decrypt.private.php
+
+/public/bundles/
+
+###< symfony/framework-bundle ###
