@@ -3,3 +3,8 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+api_cart_example:
+    path: /api/cart/calculate-cart/
+    controller: App\Controller\Api\CartApiController::calculateCart
+    methods: [POST]

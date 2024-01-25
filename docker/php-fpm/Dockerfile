@@ -1,6 +1,9 @@
 FROM php:8.2.0-fpm-alpine
 
-RUN apk add --no-cache curl git build-base zlib-dev oniguruma-dev autoconf bash
+RUN apk add --no-cache curl git build-base zlib-dev oniguruma-dev autoconf bash linux-headers
+
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+COPY ./docker/php-fpm/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 ARG PUID=1000
 ARG PGID=1000
