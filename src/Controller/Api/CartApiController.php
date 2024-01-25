@@ -2,8 +2,8 @@
 
 namespace App\Controller\Api;
 
-use App\ApiClient\OpenexchangeratesApiClient;
 use App\Entity\CalculateCart;
+use App\Responce\CalculateCartResponce;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,11 +13,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api/cart', name: 'api')]
 class CartApiController extends AbstractController
 {
-    private OpenexchangeratesApiClient $exchangeRatesClient;
+    private CalculateCartResponce $calculateCartResponce;
 
-    public function __construct(OpenexchangeratesApiClient $exchangeRatesClient)
+    public function __construct(CalculateCartResponce $calculateCartResponce)
     {
-        $this->exchangeRatesClient = $exchangeRatesClient;
+        $this->calculateCartResponce = $calculateCartResponce;
     }
 
     #[Route('/calculate-cart', name: 'calculateCart')]
@@ -31,8 +31,6 @@ class CartApiController extends AbstractController
             return $this->json($errors, 400);
         }
 
-        $exchangeRates = $this->exchangeRatesClient->getExchangeRates();
-
-        return $this->json([$requestData, $calculateCart]);
+        return $this->json($this->calculateCartResponce->toArray($calculateCart));
     }
 }
