@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\ApiClient\OpenExchangeRatesApiClient;
+use Exception;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\Required;
@@ -34,11 +36,13 @@ class CalculateCart
     private array $items;
     #[NotBlank]
     private string $checkoutCurrency;
+    private OpenExchangeRatesApiClient $exchangeRatesClient;
 
     public function __construct(array $items, string $checkoutCurrency)
     {
         $this->items = $items;
         $this->checkoutCurrency = $checkoutCurrency;
+        $this->exchangeRatesClient = new OpenExchangeRatesApiClient;
     }
 
     /**
@@ -55,5 +59,29 @@ class CalculateCart
     public function getCheckoutCurrency(): string
     {
         return $this->checkoutCurrency;
+    }
+
+    /**
+     * @return float
+     * @throws Exception
+     */
+    public function calculateCart(): float
+    {
+        $cartSum = 0;
+        foreach ($this->getItems() as $item) {
+            if ($item['currency'] === $this->getCheckoutCurrency()) {
+                $cartSum += $item['price'] * $item['quantity'];
+            } else {
+                $convertedToCheckoutCurrency = $this->exchangeRatesClient->convertCurrency(
+                    $item['currency'],
+                    $this->getCheckoutCurrency(),
+                    $item['price'] * $item['quantity']
+                );
+
+                $cartSum += $convertedToCheckoutCurrency;
+            }
+        }
+
+        return round($cartSum, 2);
     }
 }

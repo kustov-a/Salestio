@@ -3,7 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\CalculateCart;
-use App\Responce\CalculateCartResponce;
+use App\Responce\CalculateCartResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,11 +13,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api/cart', name: 'api')]
 class CartApiController extends AbstractController
 {
-    private CalculateCartResponce $calculateCartResponce;
+    private CalculateCartResponse $calculateCartResponse;
 
-    public function __construct(CalculateCartResponce $calculateCartResponce)
+    public function __construct(CalculateCartResponse $calculateCartResponse)
     {
-        $this->calculateCartResponce = $calculateCartResponce;
+        $this->calculateCartResponse = $calculateCartResponse;
     }
 
     #[Route('/calculate-cart', name: 'calculateCart')]
@@ -31,6 +31,8 @@ class CartApiController extends AbstractController
             return $this->json($errors, 400);
         }
 
-        return $this->json($this->calculateCartResponce->toArray($calculateCart));
+        $cartSum = $calculateCart->calculateCart();
+
+        return $this->json($this->calculateCartResponse->toArray($cartSum, $calculateCart->getCheckoutCurrency()));
     }
 }
